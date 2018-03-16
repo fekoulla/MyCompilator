@@ -1,6 +1,6 @@
 <?php
 
 $toto = "truc";
-echo "Hello World !"
+echo "Hello World !";
     
 ?>
