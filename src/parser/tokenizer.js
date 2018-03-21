@@ -133,6 +133,13 @@ module.exports = input => {
                 addToken('parenthesis-end', ')', cursor_y);
                 current++
                 break
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                addToken('operator', char, cursor_y);
+                current++
+                break
                 default:
                 const isKeyWord = checkKeywords(slice)
                 if (isKeyWord) {

@@ -2,31 +2,31 @@ module.exports = tokens => {
     var AST = { body: [] };
     var last_token = null;
     var php_start = false;
-    
+
     if(tokens.shift().type != 'script-php-start'){
-         throw 'You need to start your code with "<?php"'
+        throw 'You need to start your code with "<?php"'
     }
     while (tokens.length > 0) {
         var current_token = tokens.shift();
         switch(current_token.type){
             case 'php-echo-command':
                 var next = tokens.shift();
-                    current_token= next;
-                    switch(next.type){
-                        case 'object-string':
-                        case 'number':
-                        case 'number-float':
-                            expression.value = next;
-                            break;
-                        default:
-                            throw 'You have to assign a known type to echo command '+last_token.value;
-                    }
-                    AST.body.push(expression);
-                    next = tokens.shift();
-                    current_token= next;
-                    if(next.type != "instruction-end"){
-                        throw 'You need to terminate your instruction with ; at line ' + next.line
-                    }
+                current_token= next;
+                switch(next.type){
+                    case 'object-string':
+                    case 'number':
+                    case 'number-float':
+                        expression.value = next;
+                        break;
+                    default:
+                        throw 'You have to assign a known type to echo command '+last_token.value;
+                }
+                AST.body.push(expression);
+                next = tokens.shift();
+                current_token= next;
+                if(next.type != "instruction-end"){
+                    throw 'You need to terminate your instruction with ; at line ' + next.line
+                }
                 break;
             case 'variable-declaraction':
                 var expression = {
@@ -51,10 +51,10 @@ module.exports = tokens => {
                 }
                 AST.body.push(expression);
                 next = tokens.shift();
-                    current_token= next;
-                    if(next.type != "instruction-end"){
-                        throw 'You need to terminate your instruction with ; at line ' + next.line
-                    }
+                current_token= next;
+                if(next.type != "instruction-end"){
+                    throw 'You need to terminate your instruction with ; at line ' + next.line
+                }
                 break;
             case 'equal':
                 if(last_token.type=="identifier"){
@@ -70,16 +70,57 @@ module.exports = tokens => {
                         case 'number':
                         case 'number-float':
                             expression.value = next;
+                            next = tokens.shift();
+                            current_token= next;
+                            if(next.type != "instruction-end"){
+                                throw 'You need to terminate your instruction with ; at line ' + next.line
+                            }
+                            break;
+                        case 'variable-declaration':
                             break;
                         default:
-                            throw 'You have to assign a known type to variable '+last_token.value;
+                            throw 'You have to assign a known type to variable ' + last_token.value + ' at line ' + next.line;
                     }
                     AST.body.push(expression);
-                    next = tokens.shift();
-                    current_token= next;
-                    if(next.type != "instruction-end"){
-                        throw 'You need to terminate your instruction with ; at line ' + next.line
+
+                } else {
+                    throw 'Empty equal at line ' + next.line
+                }
+                break;
+
+            case 'operator':
+                if(last_token.type=="identifier"){
+                    var expression = {
+                        type: 'VariableAssignationExpression',
+                        identifier: last_token.value,
+                        value: ''
                     }
+                    var next = tokens.shift();
+                    current_token= next;
+                    switch(next.type){
+                        case 'object-string':
+                        case 'number':
+                        case 'number-float':
+                            expression.value = next;
+                            break;
+                        case 'variable-declaration':
+                            next = tokens.shift();
+                            current_token= next;
+                            if(next.type != "identifier"){
+                                throw 'No variable declaration at line ' + current_token.line
+                            }
+                            next = tokens.shift();
+                            current_token= next;
+                            if(next.type != "instruction-end"){
+                                throw 'You need to terminate your instruction with ; at line ' + next.line
+                            }
+                            break;
+                        default:
+                            throw 'You have to assign a known type to variable ' + last_token.value;
+                    }
+                    AST.body.push(expression);
+                } else {
+                    throw 'Empty operator at line ' + next.line
                 }
                 break;
 
