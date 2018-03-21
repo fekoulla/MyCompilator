@@ -1,5 +1,6 @@
 const keywords = require('./keywords.js')
 const Token = require('../grammar/token.js')
+const TokenFunctions = require('./tokenFunctions.js')
 const chalk = require('chalk')
 
 module.exports = input => {
