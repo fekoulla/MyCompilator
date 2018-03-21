@@ -6,10 +6,11 @@ const addToken = (type, value) => {
 
 
 function carriageReturn(){
-	addToken('line-break', '\n')
+        addToken('line-break', '\n')
         cursor_y += 1
         cursor_x = 1
         current++
+        return null
 }
 
 function doubleCote(){
@@ -36,6 +37,11 @@ function doubleCote(){
 function equalOperator(){
 	addToken('equal', '=')
         current++
+}
+
+function variableDeclaration(){
+	addToken('variable-declaration', '$', cursor_y)
+    current++
 }
 
 function substractionOperator(){
@@ -82,6 +88,7 @@ function parenthesisEnd(){
 	addToken('parenthesis-end', ')');
         current++
 }
+
 
 
 

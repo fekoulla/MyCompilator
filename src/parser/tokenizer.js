@@ -41,10 +41,11 @@ module.exports = input => {
 
         switch (char) {
             case '\n':
-                addToken('line-break', '\n', cursor_y)
-                cursor_y += 1
-                cursor_x = 1
-                current++
+                // addToken('line-break', '\n', cursor_y)
+                // cursor_y += 1
+                // cursor_x = 1
+                // current++
+                TokenFunctions.carriageReturn();
                 break
 
                 case '"':
