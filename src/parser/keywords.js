@@ -3,7 +3,11 @@ const keywords = {
     'script-php-start': { r: /(<\?php)/, s: '<?php' },
     'script-end-php': { r: /(\?>)/, s: '?>' },
     'php-echo-command': { r: /(echo)/, s: 'echo' },
-    'if-condition': { r: /(if)/, s: 'if' }
+    'comparison': { r: /(if)/, s: 'if' },
+    'comparison': { r: /(==)/, s: 'comparison' },
+    'comparison': { r: /(<=)/, s: 'comparison' },
+    'comparison': { r: /(>=)/, s: 'comparison' },
+    'comparison': { r: /(!=)/, s: 'comparison' }
 };
 
 module.exports = keywords;

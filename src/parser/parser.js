@@ -8,6 +8,7 @@ module.exports = tokens => {
     }
     while (tokens.length > 0) {
         var current_token = tokens.shift();
+        var is_opening_brace = false;
         switch(current_token.type){
             case 'php-echo-command':
                 var next = tokens.shift();
@@ -183,9 +184,64 @@ module.exports = tokens => {
                 break;
             case 'line-break':
                 break;
+            case 'if-condition':
+                var next = tokens.shift();
+                current_token= next;
+                if(next.type==="parenthesis-start"){
+                    var isEnding= false;
+                    var is_comparison = false;
+                    do{
+                        next= tokens.shift();
+                        current_token= next;
+                        switch(next.type){
+                            case 'object-string':
+                            case 'number':
+                            case 'number-float':
+                            case 'identifier':
+                                expression.arguments.push(next);
+                                break;
+                            case 'parenthesis-end':
+                                isEnding= true;
+                                break
+                                case 'comparison':
+                                if(is_comparison){
+                                    throw "You have too much comparison operator."
+                                }
+                                is_comparison = true;
+                            default:
+                                throw 'Error of using arguments';
+                        }
+                    } while(next.type!="parenthesis-end" && tokens.length > 0);
+                    if(!isEnding){
+                        throw 'You have to close parenthesis when you use method.';
+                    }else if(!is_comparison){
+                        throw 'Missing a comparison operator.';
+                    }else{
+                    AST.body.push(expression);
+                    if(next.type != "opening-brace"){
+                        is_opening_brace = true;
+                    } else {
+                        throw 'You need to start condition instruction by an opening brace.'
+                    }
+                }
+            }else{
+                throw 'You have to start using method by parenthesis at line ' + next.line;
+            }
+                break;
+            case 'ending-brace':
+                if(!is_opening_brace){
+                    throw 'You have too much ending brace.'
+                } else {
+                    is_opening_brace = false;
+                }
+                var next = tokens.shift();
+                current_token= next;
+                if(next.type != "line-break"){
+                    throw 'Add a break line at the end of a statement at line ' + next.line;
+                }
 
-        }
-        last_token= current_token;
     }
-    return AST;
+    last_token= current_token;
+}
+return AST;
 }

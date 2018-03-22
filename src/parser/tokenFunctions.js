@@ -10,7 +10,6 @@ function carriageReturn(){
         cursor_y += 1
         cursor_x = 1
         current++
-        return null
 }
 
 function doubleCote(){

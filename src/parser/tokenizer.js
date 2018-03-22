@@ -41,11 +41,11 @@ module.exports = input => {
 
         switch (char) {
             case '\n':
-                // addToken('line-break', '\n', cursor_y)
-                // cursor_y += 1
-                // cursor_x = 1
-                // current++
-                TokenFunctions.carriageReturn();
+                addToken('line-break', '\n', cursor_y)
+                cursor_y += 1
+                cursor_x = 1
+                current++
+                //TokenFunctions.carriageReturn();
                 break
 
                 case '"':
@@ -135,11 +135,24 @@ module.exports = input => {
                 addToken('parenthesis-end', ')', cursor_y);
                 current++
                 break
+                case '{':
+                addToken('opening-brace', '{', cursor_y);
+                current++
+                break
+                case '}':
+                addToken('ending-brace', '}', cursor_y);
+                current++
+                break
                 case '+':
                 case '-':
                 case '*':
                 case '/':
                 addToken('operator', char, cursor_y);
+                current++
+                break
+                case '>':
+                case '<':
+                addToken('comparison', char, cursor_y);
                 current++
                 break
                 default:
